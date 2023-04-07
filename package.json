@@ -1,13 +1,22 @@
 {
-  "name": "nn",
+  "name": "@szczepano/nn",
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
+  "author": "Michal Szczczepanski",
   "scripts": {
     "dev": "parcel watch src/index.ts --host localhost --target dev --no-cache",
     "prod": "parcel build src/index.ts --target prod --no-cache",
     "start": "node dist/prod/index.js",
     "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vane/nn.git"
+  },
+  "engines": {
+    "node": ">= 12.0.0",
+    "parcel": "^2.8.3"
   },
   "pre-commit": [
     "lint"
