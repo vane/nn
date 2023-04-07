@@ -1,0 +1,36 @@
+{
+  "name": "nn",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "parcel watch src/index.ts --host localhost --target dev --no-cache",
+    "prod": "parcel build src/index.ts --target prod --no-cache",
+    "start": "node dist/prod/index.js",
+    "test": "jest"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "targets": {
+    "dev": {},
+    "prod": {}
+  },
+  "devDependencies": {
+    "@parcel/transformer-typescript-tsc": "^2.8.3",
+    "@types/jest": "^29.5.0",
+    "@types/random-seed": "^0.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "parcel": "^2.8.3",
+    "pre-commit": "^1.2.2",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.3"
+  },
+  "dependencies": {
+    "random-seed": "^0.3.0"
+  }
+}
