@@ -1,2 +1,6 @@
+.parcel-cache
+.venv
+tmp
+jest.config.js
 node_modules
 dist

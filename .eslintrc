@@ -8,12 +8,7 @@
     "project": "./tsconfig.json",
     "sourceType": "module"
   },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
-  "plugins": ["@typescript-eslint", "react"],
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -23,8 +18,10 @@
   ],
   "rules": {
     "max-len": ["error", {"code": 120, "ignoreComments": true, "ignoreTemplateLiterals": true}],
-    "no-console": "warn",
+    "no-console": "off",
     "semi": [ "error", "always" ],
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "sort-imports": [
       "error",
       {
