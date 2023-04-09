@@ -1,3 +1,4 @@
+import { MathNN } from './math.nn';
 import { ValNn } from './val.nn';
 
 describe('nn/val.nn', () => {
@@ -60,5 +61,43 @@ describe('nn/val.nn', () => {
     expect(result.op?.right?.grad).toEqual(4);
     expect(result.op?.left.op?.left.grad).toEqual(2);
     expect(result.op?.left.op?.right?.grad).toEqual(2);
+  });
+
+  test('test backward', () => {
+    const numOperations = 9;
+    const x1 = ValNn.new(2);
+    const x2 = ValNn.new(0);
+
+    const w1 = ValNn.new(-3);
+    const w2 = ValNn.new(1);
+
+    const b = ValNn.new(6.88137);
+    // 1->mul
+    const x1w1 = x1.mul(w1);
+    // 2->mul
+    const x2w2 = x2.mul(w2);
+    // 3->add
+    const nn = x1w1.add(x2w2);
+    // 4->add
+    const n = nn.add(b);
+    // 5->mul, 6->exp
+    const e = ValNn.new(2).mul(n).exp();
+    // 7->sub
+    const i0 = e.sub(ValNn.new(1));
+    // 8->add
+    const i1 = e.add(ValNn.new(1));
+    // 9->div
+    const o = i0.div(i1);
+    o.backward();
+    expect(MathNN.digit4(x1.grad)).toEqual(-1.5);
+    expect(MathNN.digit4(x2.grad)).toEqual(0.5);
+    expect(MathNN.digit4(w1.grad)).toEqual(1);
+    expect(MathNN.digit4(w2.grad)).toEqual(0);
+    expect(MathNN.digit4(i0.grad)).toEqual(0.1464);
+    expect(MathNN.digit4(i1.grad)).toEqual(-0.1036);
+    expect(MathNN.digit4(e.grad)).toEqual(0.0429);
+    // check number of backward operations equal number of forward operations 9
+    const backwardOperations = parseInt(o.printOps().split('\n')[17].charAt(0));
+    expect(backwardOperations).toEqual(numOperations);
   });
 });

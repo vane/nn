@@ -141,11 +141,8 @@ grad (${op.op.op})(${MathNN.digit4(op.op.left.grad)}) = ${MathNN.digit4(op.grad)
       case OpNn.DIV:
         /*
          * (f(x)/g(x))' = f'(x)g(x)-f(x)g'(x)/g^2(x)
-         * left f(x) right g(x)
          */
-        // f'(x)g(x)/g^2(x) = 1*g(x)/g^2(x) = 1/g(x)
         val.left.grad += next.grad / val.right!.value;
-        // -f(x)g'(x)/g^2(x) = -f(x)/g^2(x)
         val.right!.grad += (-val.left.value * next.grad) / Math.pow(val.right!.value, 2);
         break;
       case OpNn.MUL:
