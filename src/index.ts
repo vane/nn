@@ -1,4 +1,4 @@
-import { ValNn } from './nn/valNn';
+import { ValNn } from './nn/val.nn';
 
 class Foo {
   constructor() {
@@ -33,6 +33,7 @@ class Foo {
     console.log(`w1 ${w1}`);
     console.log(`x2 ${x2}`);
     console.log(`x1 ${x1}`);
+    console.log(o.printOps());
   }
 }
 

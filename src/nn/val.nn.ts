@@ -1,3 +1,5 @@
+import { MathNN } from './math.nn';
+
 export enum OpNn {
   ADD = '+',
   SUB = '-',
@@ -83,21 +85,22 @@ export class ValNn {
 
   printOps = (): string => {
     const ops: ValNn[] = [this];
+    const visited = new Set();
     const out: string[] = [];
     while (ops.length > 0) {
       const op = ops.shift();
+      if (visited.has(op)) continue;
       if (op?.op) {
+        visited.add(op);
         if (op.op.right) {
-          out.push(`${op.op.left.value} ${op.op.op} ${op.op.right.value} = ${op.value}
-left(grad=${op.op.left.grad})
-right(grad=${op.op.right.grad})
-result(grad=${op.grad})
-`);
+          out.push(`${MathNN.digit4(op.op.left.value)} ${op.op.op} ${MathNN.digit4(
+            op.op.right.value
+          )} = ${MathNN.digit4(op.value)}
+grad ${MathNN.digit4(op.op.left.grad)} (${op.op.op}) ${MathNN.digit4(op.op.right.grad)} = ${MathNN.digit4(op.grad)}`);
           ops.push(op.op.left, op.op.right);
         } else {
-          out.push(`${op.op.op}(${op.op.left.value}) = ${op.value}
-left(grad=${op.op.left.grad})
-result(grad=${op.grad})
+          out.push(`${op.op.op}(${MathNN.digit4(op.op.left.value)}) = ${MathNN.digit4(op.value)}
+grad (${op.op.op})(${MathNN.digit4(op.op.left.grad)}) = ${MathNN.digit4(op.grad)}
 `);
           ops.push(op.op.left);
         }
@@ -123,11 +126,7 @@ result(grad=${op.grad})
       if (op?.op) {
         visited.add(op);
         ValNn.backwardOne(op.op, op);
-        if (op.op.right) {
-          ops.push(op.op.left, op.op.right);
-        } else {
-          ops.push(op.op.left);
-        }
+        op.op.right ? ops.push(op.op.left, op.op.right) : ops.push(op.op.left);
       }
     }
   }
@@ -140,8 +139,14 @@ result(grad=${op.grad})
         val.right!.grad += next.grad;
         break;
       case OpNn.DIV:
-        val.left.grad += (1 / val.right!.value) * next.grad;
-        val.right!.grad += (-1 / (2 * val.left.value)) * next.grad;
+        /*
+         * (f(x)/g(x))' = f'(x)g(x)-f(x)g'(x)/g^2(x)
+         * left f(x) right g(x)
+         */
+        // f'(x)g(x)/g^2(x) = 1*g(x)/g^2(x) = 1/g(x)
+        val.left.grad += next.grad / val.right!.value;
+        // -f(x)g'(x)/g^2(x) = -f(x)/g^2(x)
+        val.right!.grad += (-val.left.value * next.grad) / Math.pow(val.right!.value, 2);
         break;
       case OpNn.MUL:
         val.left.grad += val.right!.value * next.grad;
