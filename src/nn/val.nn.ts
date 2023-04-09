@@ -136,7 +136,7 @@ grad (${op.op.op})(${MathNN.digit4(op.op.left.grad)}) = ${MathNN.digit4(op.grad)
         break;
       case OpNn.SUB:
         val.left.grad += next.grad;
-        val.right!.grad = -1 * next.grad;
+        val.right!.grad += -1 * next.grad;
         break;
       case OpNn.DIV:
         val.left.grad += next.grad / val.right!.value;
