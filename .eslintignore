@@ -1,6 +1,7 @@
 .parcel-cache
 .venv
 tmp
+bin
 jest.config.js
 node_modules
 dist
