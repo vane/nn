@@ -1,4 +1,4 @@
-export enum Op {
+export enum OpNn {
   ADD = '+',
   SUB = '-',
   MUL = '*',
@@ -8,72 +8,72 @@ export enum Op {
   EXP = 'exp'
 }
 
-export interface ValOp {
-  left: Val;
-  right?: Val;
+export interface ValNnOp {
+  left: ValNn;
+  right?: ValNn;
   scalar?: number;
-  op: Op;
+  op: OpNn;
 }
 
-export class Val {
+export class ValNn {
   value: number;
   grad = 0;
 
-  constructor(value: number, readonly op?: ValOp) {
+  constructor(value: number, readonly op?: ValNnOp) {
     this.value = value;
   }
 
-  add(val: Val) {
-    return new Val(this.value + val.value, {
+  add(val: ValNn) {
+    return new ValNn(this.value + val.value, {
       left: this,
       right: val,
-      op: Op.ADD
+      op: OpNn.ADD
     });
   }
 
-  sub(val: Val) {
-    return new Val(this.value - val.value, {
+  sub(val: ValNn) {
+    return new ValNn(this.value - val.value, {
       left: this,
       right: val,
-      op: Op.SUB
+      op: OpNn.SUB
     });
   }
 
-  mul(val: Val) {
-    return new Val(this.value * val.value, {
+  mul(val: ValNn) {
+    return new ValNn(this.value * val.value, {
       left: this,
       right: val,
-      op: Op.MUL
+      op: OpNn.MUL
     });
   }
 
-  div(val: Val) {
-    return new Val(this.value / val.value, {
+  div(val: ValNn) {
+    return new ValNn(this.value / val.value, {
       left: this,
       right: val,
-      op: Op.DIV
+      op: OpNn.DIV
     });
   }
 
   exp() {
-    return new Val(Math.exp(this.value), {
+    return new ValNn(Math.exp(this.value), {
       left: this,
-      op: Op.EXP
+      op: OpNn.EXP
     });
   }
 
   tanh() {
-    return new Val(Math.tanh(this.value), {
+    return new ValNn(Math.tanh(this.value), {
       left: this,
-      op: Op.TANH
+      op: OpNn.TANH
     });
   }
 
   pow(val: number) {
-    return new Val(Math.pow(this.value, val), {
+    return new ValNn(Math.pow(this.value, val), {
       left: this,
       scalar: val,
-      op: Op.POW
+      op: OpNn.POW
     });
   }
 
@@ -82,7 +82,7 @@ export class Val {
   };
 
   printOps = (): string => {
-    const ops: Val[] = [this];
+    const ops: ValNn[] = [this];
     const out: string[] = [];
     while (ops.length > 0) {
       const op = ops.shift();
@@ -109,20 +109,20 @@ result(grad=${op.grad})
       .join('\n');
   };
 
-  static new = (value: number): Val => {
-    return new Val(value);
+  static new = (value: number): ValNn => {
+    return new ValNn(value);
   };
 
   backward(): void {
     this.grad = 1;
-    const ops: Val[] = [this];
+    const ops: ValNn[] = [this];
     const visited = new Set();
     while (ops.length > 0) {
       const op = ops.shift();
       if (visited.has(op)) continue;
       if (op?.op) {
         visited.add(op);
-        Val.backwardOne(op.op, op);
+        ValNn.backwardOne(op.op, op);
         if (op.op.right) {
           ops.push(op.op.left, op.op.right);
         } else {
@@ -132,28 +132,28 @@ result(grad=${op.grad})
     }
   }
 
-  static backwardOne = (val: ValOp, next: Val): void => {
+  static backwardOne = (val: ValNnOp, next: ValNn): void => {
     switch (val.op) {
-      case Op.ADD:
-      case Op.SUB:
+      case OpNn.ADD:
+      case OpNn.SUB:
         val.left.grad += next.grad;
         val.right!.grad += next.grad;
         break;
-      case Op.DIV:
+      case OpNn.DIV:
         val.left.grad += (1 / val.right!.value) * next.grad;
         val.right!.grad += (-1 / (2 * val.left.value)) * next.grad;
         break;
-      case Op.MUL:
+      case OpNn.MUL:
         val.left.grad += val.right!.value * next.grad;
         val.right!.grad += val.left.value * next.grad;
         break;
-      case Op.POW:
+      case OpNn.POW:
         val.left.grad += val.scalar! * Math.pow(val.left.value, val.scalar! - 1) * next.grad;
         break;
-      case Op.TANH:
+      case OpNn.TANH:
         val.left.grad += (1 - Math.pow(next.value, 2)) * next.grad;
         break;
-      case Op.EXP:
+      case OpNn.EXP:
         val.left.grad += next.value * next.grad;
         break;
     }

@@ -1,23 +1,23 @@
-import { Val } from './nn/val';
+import { ValNn } from './nn/valNn';
 
 class Foo {
   constructor() {
     console.log('foo');
-    const x1 = Val.new(2);
-    const x2 = Val.new(0);
+    const x1 = ValNn.new(2);
+    const x2 = ValNn.new(0);
 
-    const w1 = Val.new(-3);
-    const w2 = Val.new(1);
+    const w1 = ValNn.new(-3);
+    const w2 = ValNn.new(1);
 
-    const b = Val.new(6.8813735870195432);
+    const b = ValNn.new(6.8813735870195432);
     const x1w1 = x1.mul(w1);
     const x2w2 = x2.mul(w2);
     const nn = x1w1.add(x2w2);
     const n = nn.add(b);
-    const ee = Val.new(2).mul(n);
+    const ee = ValNn.new(2).mul(n);
     const e = ee.exp();
-    const i0 = e.sub(Val.new(1));
-    const i1 = e.add(Val.new(1));
+    const i0 = e.sub(ValNn.new(1));
+    const i1 = e.add(ValNn.new(1));
     const o = i0.div(i1);
     o.backward();
     console.log(`o ${o}`);
