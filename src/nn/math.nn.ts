@@ -75,6 +75,22 @@ export class MathNN {
         return out;
     }
 
+    static smooth = (list: number[], value: number): number[] => {
+        return list.map(v => v+value);
+    }
+
+    static log = (list: number[]): number[] => {
+        return list.map(Math.log);
+    }
+
+    static logSumAbs = (list: number[]): number => {
+        return -list.map(Math.log).reduce((a, b) => a+b, 0)
+    }
+
+    static logSumAbsNormalised = (list: number[]): number => {
+        return this.logSumAbs(list)/list.length;
+    }
+
     /**
      * Find value place in list
      */
