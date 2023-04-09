@@ -8,7 +8,7 @@
     "dev": "parcel watch src/index.ts --host localhost --target dev --no-cache",
     "build:prod": "parcel build src/index.ts --target prod --no-cache",
     "run:prod": "node dist/prod/index.js",
-    "start":"npm run build:prod && npm run run:prod",
+    "start": "npm run build:prod && npm run run:prod",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest"
