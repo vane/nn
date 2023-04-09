@@ -1,7 +1,7 @@
 export class MathNN {
-  static randomRange = (min: number, max: number): number => {
-    if (min === max) return min;
-    return Math.abs(Math.random() * (max - min) - max);
+  /* Uniform random */
+  static randomRange = (a: number, b: number): number => {
+    return a + (b - a) * Math.random();
   };
 
   static digit2 = (value: number): number => {

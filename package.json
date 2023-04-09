@@ -5,7 +5,9 @@
   "license": "MIT",
   "author": "Michal Szczczepanski",
   "scripts": {
-    "dev": "parcel watch src/index.ts --host localhost --target dev --no-cache",
+    "build:dev": "parcel build src/index.ts --target dev --no-cache --no-optimize",
+    "run:dev": "node dist/dev/index.js",
+    "dev": "npm run build:dev && npm run run:dev",
     "build:prod": "parcel build src/index.ts --target prod --no-cache",
     "run:prod": "node dist/prod/index.js",
     "start": "npm run build:prod && npm run run:prod",
