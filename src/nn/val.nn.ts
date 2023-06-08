@@ -1,5 +1,3 @@
-import { MathNN } from './math.nn';
-
 export enum OpNn {
   ADD = '+',
   SUB = '-',
@@ -77,43 +75,14 @@ export class ValNn {
   };
 
   toString = () => {
-    return `Val(value=${this.value}, grad=${this.grad})`;
-  };
-
-  printOps = (): string => {
-    const ops: ValNn[] = [this];
-    const visited = new Set();
-    const out: string[] = [];
-    while (ops.length > 0) {
-      const op = ops.shift();
-      if (visited.has(op)) continue;
-      if (op?.op) {
-        visited.add(op);
-        if (op.op.right) {
-          out.push(`${MathNN.digit4(op.op.left.value)} ${op.op.op} ${MathNN.digit4(
-            op.op.right.value
-          )} = ${MathNN.digit4(op.value)}
-grad ${MathNN.digit4(op.op.left.grad)} (${op.op.op}) ${MathNN.digit4(op.op.right.grad)} = ${MathNN.digit4(op.grad)}`);
-          ops.push(op.op.left, op.op.right);
-        } else {
-          out.push(`${op.op.op}(${MathNN.digit4(op.op.left.value)}) = ${MathNN.digit4(op.value)}
-grad (${op.op.op})(${MathNN.digit4(op.op.left.grad)}) = ${MathNN.digit4(op.grad)}
-`);
-          ops.push(op.op.left);
-        }
-      }
-    }
-    return out
-      .reverse()
-      .map((v, i) => `${i + 1} -> ${v}`)
-      .join('\n');
+    return `${this.value}`;
   };
 
   static new = (value: number): ValNn => {
     return new ValNn(value);
   };
 
-  backward = (): void => {
+  backward = (): number => {
     this.grad = 1;
     const ops: ValNn[] = [this];
     const visited = new Set();
@@ -126,6 +95,7 @@ grad (${op.op.op})(${MathNN.digit4(op.op.left.grad)}) = ${MathNN.digit4(op.grad)
         op.op.right ? ops.push(op.op.left, op.op.right) : ops.push(op.op.left);
       }
     }
+    return visited.size;
   };
 
   static backwardOne = (val: ValNnOp, next: ValNn): void => {

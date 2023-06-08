@@ -18,12 +18,16 @@ export class LayerNn {
     return out;
   }
 
-  get params(): ValNn[] {
-    const out = [];
+  zeroGrad() {
     for (let i = 0; i < this.neurons.length; i++) {
-      out.push(...this.neurons[i].params);
+      this.neurons[i].zeroGrad();
     }
-    return out;
+  }
+
+  addGrad(value: number) {
+    for (let i = 0; i < this.neurons.length; i++) {
+      this.neurons[i].addGrad(value);
+    }
   }
 
   static new = (numInputs: number, numOutputs: number): LayerNn => {

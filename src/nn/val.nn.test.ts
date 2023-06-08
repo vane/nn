@@ -88,7 +88,7 @@ describe('nn/val.nn', () => {
     const i1 = e.add(ValNn.new(1));
     // 9->div
     const o = i0.div(i1);
-    o.backward();
+    const backwardSize = o.backward();
     expect(MathNN.digit4(x1.grad)).toEqual(-1.5);
     expect(MathNN.digit4(x2.grad)).toEqual(0.5);
     expect(MathNN.digit4(w1.grad)).toEqual(1);
@@ -97,7 +97,6 @@ describe('nn/val.nn', () => {
     expect(MathNN.digit4(i1.grad)).toEqual(-0.1036);
     expect(MathNN.digit4(e.grad)).toEqual(0.0429);
     // check number of backward operations equal number of forward operations 9
-    const backwardOperations = parseInt(o.printOps().split('\n')[17].charAt(0));
-    expect(backwardOperations).toEqual(numOperations);
+    expect(backwardSize).toEqual(numOperations);
   });
 });

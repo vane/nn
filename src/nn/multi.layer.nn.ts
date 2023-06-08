@@ -19,12 +19,16 @@ export class MultiLayerNn {
     return value;
   }
 
-  get params(): ValNn[] {
-    const out = [];
+  zeroGrad() {
     for (let i = 0; i < this.layers.length; i++) {
-      out.push(...this.layers[i].params);
+      this.layers[i].zeroGrad();
     }
-    return out;
+  }
+
+  addGrad(value: number) {
+    for (let i = 0; i < this.layers.length; i++) {
+      this.layers[i].addGrad(value);
+    }
   }
 
   static new = (numInputs: number, numOutputs: number[]): MultiLayerNn => {

@@ -21,8 +21,18 @@ export class NeuronNn {
     return sum.tanh();
   }
 
-  get params(): ValNn[] {
-    return [...this.weights, this.b];
+  zeroGrad() {
+    for (let i = 0; i < this.weights.length; i++) {
+      this.weights[i].grad = 0;
+    }
+    this.b.grad = 0;
+  }
+
+  addGrad(value: number) {
+    for (let i = 0; i < this.weights.length; i++) {
+      this.weights[i].value += value * this.weights[i].grad;
+    }
+    this.b.value = value * this.b.grad;
   }
 
   static new = (numInputs: number): NeuronNn => {
